@@ -541,14 +541,14 @@ namespace Playnite.DesktopApp.ViewModels
 
             OpenFullScreenCommand = new RelayCommand<object>((a) =>
             {
-                OpenFullScreen();
+                OpenFullScreen(false);
             }, new KeyGesture(Key.F11));
 
             OpenFullScreenFromControllerCommand = new RelayCommand<object>((a) =>
             {
                 if (AppSettings.GuideButtonOpensFullscreen)
                 {
-                    OpenFullScreen();
+                    OpenFullScreen(false);
                 }
             }, new KeyGesture(Key.F11));
 
@@ -973,7 +973,7 @@ namespace Playnite.DesktopApp.ViewModels
 
                         try
                         {
-                            addedGames.AddRange(Database.ImportGames(plugin, AppSettings.ForcePlayTimeSync));
+                            addedGames.AddRange(Database.ImportGames(plugin, AppSettings.ForcePlayTimeSync, false));
                             RemoveMessage($"{plugin.Id} - download");
                         }
                         catch (Exception e) when (!PlayniteEnvironment.ThrowAllErrors)
@@ -1037,7 +1037,7 @@ namespace Playnite.DesktopApp.ViewModels
 
                     try
                     {
-                        addedGames.AddRange(Database.ImportGames(library, AppSettings.ForcePlayTimeSync));
+                        addedGames.AddRange(Database.ImportGames(library, AppSettings.ForcePlayTimeSync, false));
                         RemoveMessage($"{library.Id} - download");
                     }
                     catch (Exception e) when (!PlayniteEnvironment.ThrowAllErrors)
@@ -1482,18 +1482,25 @@ namespace Playnite.DesktopApp.ViewModels
             }
         }
 
-        public void OpenFullScreen()
+        public void OpenFullScreen(bool isFirstStart)
         {
             if (GlobalTaskHandler.IsActive)
             {
-                ProgressViewViewModel.ActivateProgress(() => GlobalTaskHandler.CancelAndWait(), Resources.GetString("LOCOpeningFullscreenModeMessage"));
+                if (Dialogs.ShowMessage(Resources.GetString("LOCUpdateProgressCancelAsk"), "", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                {
+                    return;
+                }
             }
 
-            CloseView();
+            ProgressViewViewModel.ActivateProgress(() => GlobalTaskHandler.CancelAndWait(), Resources.GetString("LOCOpeningFullscreenModeMessage"));
+
+            if (!isFirstStart)
+                CloseView();
             application.Quit();
             var cmdline = new CmdLineOptions()
             {
-                SkipLibUpdate = true
+                SkipLibUpdate = false,
+                FirstTimeComplete = isFirstStart
             };
 
             ProcessStarter.StartProcess(PlaynitePaths.FullscreenExecutablePath, cmdline.ToString());

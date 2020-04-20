@@ -999,7 +999,7 @@ namespace Playnite.FullscreenApp.ViewModels
                     ToggleMainMenuCommand.Execute(null);
                 }
 
-                await UpdateDatabase(AppSettings.DownloadMetadataOnImport);
+                await UpdateDatabase(AppSettings.DownloadMetadataOnImport, false);
             }, (a) => !DatabaseUpdateRunning);
         }
 
@@ -1241,13 +1241,22 @@ namespace Playnite.FullscreenApp.ViewModels
             }
         }
 
-        public async Task UpdateDatabase(bool metaForNewGames)
+        public async Task UpdateDatabase(bool metaForNewGames, bool FirstTimeComplete)
         {
             if (!Database.IsOpen)
             {
                 Logger.Error("Cannot load new games, database is not loaded.");
                 Dialogs.ShowErrorMessage(Resources.GetString("LOCDatabaseNotOpenedError"), Resources.GetString("LOCDatabaseErroTitle"));
                 return;
+            }
+
+            bool ForceFullRefresh = FirstTimeComplete;
+            if (!FirstTimeComplete && Dialogs.ShowMessage(
+                Resources.GetString("LOCSettingsDownloadMetadataOnImport") + " ?",
+                Resources.GetString("LOCMenuReloadLibrary"),
+                MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                ForceFullRefresh = true;
             }
 
             if (GlobalTaskHandler.ProgressTask != null && GlobalTaskHandler.ProgressTask.Status == TaskStatus.Running)
@@ -1277,7 +1286,7 @@ namespace Playnite.FullscreenApp.ViewModels
                         {
                             using (Database.BufferedUpdate())
                             {
-                                addedGames.AddRange(Database.ImportGames(plugin, AppSettings.ForcePlayTimeSync));
+                                addedGames.AddRange(Database.ImportGames(plugin, AppSettings.ForcePlayTimeSync, ForceFullRefresh));
                             }
 
                             PlayniteApi.Notifications.Remove($"{plugin.Id} - download");

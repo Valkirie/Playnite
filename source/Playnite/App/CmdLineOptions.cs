@@ -15,6 +15,9 @@ namespace Playnite
         [Option("uridata")]
         public string UriData { get; set; }
 
+        [Option("firsttimecomplete")]
+        public bool FirstTimeComplete { get; set; }
+
         [Option("nolibupdate")]
         public bool SkipLibUpdate { get; set; }
 

@@ -783,7 +783,7 @@ namespace Playnite.Database
             return toAdd;
         }
 
-        public List<Game> ImportGames(LibraryPlugin library, bool forcePlayTimeSync)
+        public List<Game> ImportGames(LibraryPlugin library, bool forcePlayTimeSync, bool forceRefresh)
         {
             if (library.Capabilities?.HasCustomizedGameImport == true)
             {
@@ -809,6 +809,11 @@ namespace Playnite.Database
                     }
                     else
                     {
+                        if (forceRefresh)
+                        {
+                            addedGames.Add(existingGame);
+                        }
+
                         existingGame.IsInstalled = newGame.IsInstalled;
                         existingGame.InstallDirectory = newGame.InstallDirectory;
                         if (existingGame.PlayAction == null || existingGame.PlayAction.IsHandledByPlugin)

@@ -92,7 +92,7 @@ namespace Playnite
 
             PlayniteSettings.MigrateSettingsConfig();
             AppSettings = PlayniteSettings.LoadSettings();
-            if (AppSettings.StartInFullscreen && mode == ApplicationMode.Desktop && !CmdLine.StartInDesktop)
+            if (AppSettings.StartInFullscreen && AppSettings.FirstTimeWizardComplete && mode == ApplicationMode.Desktop && !CmdLine.StartInDesktop)
             {
                 ProcessStarter.StartProcess(PlaynitePaths.FullscreenExecutablePath, CmdLine.ToString());
                 CurrentNative.Shutdown(0);

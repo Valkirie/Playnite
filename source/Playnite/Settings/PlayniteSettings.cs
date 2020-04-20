@@ -769,7 +769,7 @@ namespace Playnite
             }
         }
 
-        private bool startInFullscreen = false;
+        private bool startInFullscreen = true;
         public bool StartInFullscreen
         {
             get
@@ -968,7 +968,7 @@ namespace Playnite
             }
         }
 
-        private bool updateLibStartup = true;
+        private bool updateLibStartup = false;
         public bool UpdateLibStartup
         {
             get
@@ -1096,7 +1096,7 @@ namespace Playnite
             }
         }
 
-        private bool startOnBoot = false;
+        private bool startOnBoot = true;
         public bool StartOnBoot
         {
             get
@@ -1422,7 +1422,7 @@ namespace Playnite
             }
         }
 
-        private bool darkenUninstalledGamesGrid = false;
+        private bool darkenUninstalledGamesGrid = true;
         public bool DarkenUninstalledGamesGrid
         {
             get => darkenUninstalledGamesGrid;

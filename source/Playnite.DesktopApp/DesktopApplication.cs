@@ -192,16 +192,12 @@ namespace Playnite.DesktopApp
                 logger.Error(e, "Failed to load third party tools.");
             }
 
-            MainModel.OpenView();
-            CurrentNative.MainWindow = MainModel.Window.Window;  
-
             if (isFirstStart)
-            {
-                await MainModel.UpdateDatabase(false);
-                await MainModel.DownloadMetadata(AppSettings.MetadataSettings);
-            }
+                MainModel.OpenFullScreen(isFirstStart);
             else
             {
+                MainModel.OpenView();
+                CurrentNative.MainWindow = MainModel.Window.Window;
                 if (AppSettings.UpdateLibStartup && !CmdLine.SkipLibUpdate)
                 {
                     await MainModel.UpdateDatabase(AppSettings.DownloadMetadataOnImport);

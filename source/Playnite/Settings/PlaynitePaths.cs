@@ -16,8 +16,8 @@ namespace Playnite
         public const string EngLocSourceFileName = "LocSource.xaml";
 
         public static string ProgramPath => Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
-        public static string DesktopExecutablePath => Path.Combine(ProgramPath, "Playnite.DesktopApp.exe");
-        public static string FullscreenExecutablePath => Path.Combine(ProgramPath, "Playnite.FullscreenApp.exe");
+        public static string DesktopExecutablePath => Path.Combine(ProgramPath.Replace("FullscreenApp", "DesktopApp"), "Playnite.DesktopApp.exe");
+        public static string FullscreenExecutablePath => Path.Combine(ProgramPath.Replace("DesktopApp", "FullscreenApp"), "Playnite.FullscreenApp.exe");
         public static string ExtensionsUserDataPath => Path.Combine(ConfigRootPath, "Extensions");
         public static string ExtensionsProgramPath => Path.Combine(ProgramPath, "Extensions");
         public static string ExtensionsDataPath => Path.Combine(ConfigRootPath, "ExtensionsData");

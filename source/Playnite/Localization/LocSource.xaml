@@ -865,6 +865,7 @@ Note that the Account Name option only works for accounts whose game libraries h
     <sys:String x:Key="LOCSteamUseVerticalCovers">Download vertical cover images</sys:String>
 
     <sys:String x:Key="LOCFullscreenFirstTimeError">First time setup is not complete. Playnite will now restart to Desktop mode to finish the procedure.</sys:String>
+    <sys:String x:Key="LOCFullscreenFirstTimeWelcome">First time setup is complete. GPD thanks you for your purchase and wishes you a good game!</sys:String>
     <sys:String x:Key="LOCQuickFilterRecentlyPlayed">Recently Played</sys:String>
     <sys:String x:Key="LOCQuickFilterFavorites">Favorites</sys:String>
     <sys:String x:Key="LOCQuickFilterMostPlayed">Most Played</sys:String>

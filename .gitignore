@@ -276,3 +276,4 @@ source/PlayniteServices/customSettings.json
 # Not redistributable
 XBOXONE.ttf
 PlayStation4.ttf
+*.zip

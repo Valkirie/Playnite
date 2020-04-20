@@ -179,7 +179,7 @@ namespace Playnite
             }
         }
 
-        private int columns = 4;
+        private int columns = 4; // 1280x800
         public int Columns
         {
             get
@@ -194,7 +194,7 @@ namespace Playnite
             }
         }
 
-        private bool horizontalLayout = false;
+        private bool horizontalLayout = true;
         public bool HorizontalLayout
         {
             get
@@ -209,7 +209,7 @@ namespace Playnite
             }
         }
 
-        private bool showBattery = false;
+        private bool showBattery = true;
         public bool ShowBattery
         {
             get
@@ -239,7 +239,7 @@ namespace Playnite
             }
         }
 
-        private bool showBatteryPercentage = false;
+        private bool showBatteryPercentage = true;
         public bool ShowBatteryPercentage
         {
             get
@@ -329,7 +329,7 @@ namespace Playnite
             }
         }
 
-        private bool darkenUninstalledGamesGrid = false;
+        private bool darkenUninstalledGamesGrid = true;
         public bool DarkenUninstalledGamesGrid
         {
             get => darkenUninstalledGamesGrid;
@@ -340,7 +340,7 @@ namespace Playnite
             }
         }
 
-        private bool enableMainBackgroundImage = false;
+        private bool enableMainBackgroundImage = true;
         public bool EnableMainBackgroundImage
         {
             get

@@ -53,7 +53,7 @@ namespace Playnite.FullscreenApp
 
             if (!AppSettings.FirstTimeWizardComplete)
             {
-                Dialogs.ShowErrorMessage(ResourceProvider.GetString("LOCFullscreenFirstTimeError"), "");
+                //Dialogs.ShowErrorMessage(ResourceProvider.GetString("LOCFullscreenFirstTimeError"), "");
                 ReleaseResources();
                 Process.Start(PlaynitePaths.DesktopExecutablePath);
                 CurrentNative.Shutdown(0);
@@ -118,9 +118,14 @@ namespace Playnite.FullscreenApp
             MainModel.OpenView();
             CurrentNative.MainWindow = MainModel.Window.Window;
 
-            if (AppSettings.UpdateLibStartup && !CmdLine.SkipLibUpdate)
+            if (CmdLine.FirstTimeComplete)
             {
-                await MainModel.UpdateDatabase(AppSettings.DownloadMetadataOnImport);
+                Dialogs.ShowErrorMessage(ResourceProvider.GetString("LOCFullscreenFirstTimeWelcome"), "");
+            }
+
+            if (AppSettings.UpdateLibStartup && !CmdLine.SkipLibUpdate || CmdLine.FirstTimeComplete)
+            {
+                await MainModel.UpdateDatabase(AppSettings.DownloadMetadataOnImport, CmdLine.FirstTimeComplete);
             }
         }
 
