@@ -35,20 +35,21 @@ namespace Playnite.Tests.Database
             {
                 var db = new GameDatabase(temp.TempPath);
                 db.OpenDatabase();
-                db.ImportGames(libPlugin.Object, true, false);
+
+                db.ImportGames(libPlugin.Object, true, new List<ImportExclusionItem>());
                 Assert.AreEqual(timeToImport, db.Games.First().Playtime);
 
                 timeToImport = 600;
-                db.ImportGames(libPlugin.Object, false, false);
+                db.ImportGames(libPlugin.Object, false, new List<ImportExclusionItem>());
                 Assert.AreEqual(500, db.Games.First().Playtime);
-                db.ImportGames(libPlugin.Object, true, false);
+                db.ImportGames(libPlugin.Object, true, new List<ImportExclusionItem>());
                 Assert.AreEqual(timeToImport, db.Games.First().Playtime);
 
                 var g = db.Games.First();
                 g.Playtime = 0;
                 db.Games.Update(g);
                 Assert.AreEqual(0, db.Games.First().Playtime);
-                db.ImportGames(libPlugin.Object, false, false);
+                db.ImportGames(libPlugin.Object, false, new List<ImportExclusionItem>());
                 Assert.AreEqual(timeToImport, db.Games.First().Playtime);
             }
         }

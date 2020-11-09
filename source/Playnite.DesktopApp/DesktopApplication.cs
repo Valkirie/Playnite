@@ -1,6 +1,7 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using Playnite.API;
 using Playnite.Controllers;
+using Playnite.Controls;
 using Playnite.Database;
 using Playnite.DesktopApp.API;
 using Playnite.DesktopApp.Controls;
@@ -54,21 +55,18 @@ namespace Playnite.DesktopApp
         {
             ProgressWindowFactory.SetWindowType<ProgressWindow>();
             CrashHandlerWindowFactory.SetWindowType<CrashHandlerWindow>();
+            ExtensionCrashHandlerWindowFactory.SetWindowType<ExtensionCrashHandlerWindow>();
             UpdateWindowFactory.SetWindowType<UpdateWindow>();
             Dialogs = new DesktopDialogs();
             Playnite.Dialogs.SetHandler(Dialogs);
-
-            if (CheckOtherInstances())
-            {
-                return;
-            }
-
             ConfigureApplication();
             if (AppSettings.DisableDpiAwareness)
             {
                 DisableDpiAwareness();
             }
 
+            EventManager.RegisterClassHandler(typeof(WindowBase), WindowBase.ClosedRoutedEvent, new RoutedEventHandler(WindowBaseCloseHandler));
+            EventManager.RegisterClassHandler(typeof(WindowBase), WindowBase.LoadedRoutedEvent, new RoutedEventHandler(WindowBaseLoadedHandler));
             InstantiateApp();
             var isFirstStart = ProcessStartupWizard();
             MigrateDatabase();
@@ -76,11 +74,21 @@ namespace Playnite.DesktopApp
             OpenMainViewAsync(isFirstStart);
             LoadTrayIcon();
 #pragma warning disable CS4014
-            StartUpdateCheckerAsync();            
+            StartUpdateCheckerAsync();
             SendUsageDataAsync();
 #pragma warning restore CS4014
             ProcessArguments();
             splashScreen?.Close(new TimeSpan(0));
+        }
+
+        private void WindowBaseCloseHandler(object sender, RoutedEventArgs e)
+        {
+            WindowManager.NotifyChildOwnershipChanges();
+        }
+
+        private void WindowBaseLoadedHandler(object sender, RoutedEventArgs e)
+        {
+            WindowManager.NotifyChildOwnershipChanges();
         }
 
         public override void InitializeNative()
@@ -140,7 +148,8 @@ namespace Playnite.DesktopApp
                 new ResourceProvider(),
                 new NotificationsAPI(),
                 GamesEditor,
-                new PlayniteUriHandler());
+                new PlayniteUriHandler(),
+                new PlayniteSettingsAPI(AppSettings));
             Game.DatabaseReference = Database;
             ImageSourceManager.SetDatabase(Database);
             MainModel = new DesktopAppViewModel(
@@ -180,8 +189,8 @@ namespace Playnite.DesktopApp
 
         private async void OpenMainViewAsync(bool isFirstStart)
         {
-            Extensions.LoadPlugins(Api, AppSettings.DisabledPlugins);
-            Extensions.LoadScripts(Api, AppSettings.DisabledPlugins);
+            Extensions.LoadPlugins(Api, AppSettings.DisabledPlugins, CmdLine.SafeStartup);
+            Extensions.LoadScripts(Api, AppSettings.DisabledPlugins, CmdLine.SafeStartup);
 
             try
             {
@@ -287,6 +296,18 @@ namespace Playnite.DesktopApp
                 ResourceProvider.GetResource(AppSettings.TrayIcon.GetDescription()) as BitmapImage ??
                 ResourceProvider.GetResource("TrayIcon") as BitmapImage;
             return new Icon(trayIconImage.UriSource.LocalPath);
+        }
+
+        public override void SwitchAppMode(ApplicationMode mode)
+        {
+            if (mode == ApplicationMode.Fullscreen)
+            {
+                MainModel.SwitchToFullscreenMode();
+            }
+            else
+            {
+                Restore();
+            }
         }
     }
 }

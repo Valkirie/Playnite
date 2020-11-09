@@ -24,6 +24,9 @@ namespace Playnite
         [Option("startdesktop")]
         public bool StartInDesktop { get; set; }
 
+        [Option("startfullscreen")]
+        public bool StartInFullscreen { get; set; }
+
         [Option("forcesoftrender")]
         public bool ForceSoftwareRender { get; set; }
 
@@ -32,6 +35,18 @@ namespace Playnite
 
         [Option("hidesplashscreen")]
         public bool HideSplashScreen { get; set; }
+
+        [Option("installext")]
+        public string InstallExtension { get; set; }
+
+        [Option("clearwebcache")]
+        public bool ClearWebCache { get; set; }
+
+        [Option("shutdown")]
+        public bool Shutdown { get; set; }
+
+        [Option("safestartup")]
+        public bool SafeStartup { get; set; }
 
         public override string ToString()
         {
