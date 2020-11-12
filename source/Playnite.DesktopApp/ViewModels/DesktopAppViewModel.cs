@@ -1635,7 +1635,7 @@ namespace Playnite.DesktopApp.ViewModels
             }
         }
 
-        public void SwitchToFullscreenMode(bool isFirstStart)
+        public void SwitchToFullscreenMode(bool isFirstStart = false)
         {
             if (GlobalTaskHandler.IsActive)
             {
@@ -1649,18 +1649,29 @@ namespace Playnite.DesktopApp.ViewModels
                     new GlobalProgressOptions("LOCOpeningFullscreenModeMessage"));
             }
 
-            ProgressViewViewModel.ActivateProgress(() => GlobalTaskHandler.CancelAndWait(), Resources.GetString("LOCOpeningFullscreenModeMessage"));
-
-            if (!isFirstStart)
-                CloseView();
-            application.Quit();
-            var cmdline = new CmdLineOptions()
+            var openProgress = new ProgressViewViewModel(new ProgressWindowFactory(),
+            (_) =>
             {
-                SkipLibUpdate = false,
-                FirstTimeComplete = isFirstStart
-            };
+                if (!Database.IsOpen)
+                {
+                    Database.SetDatabasePath(AppSettings.DatabasePath);
+                    Database.OpenDatabase();
+                }
+            }, new GlobalProgressOptions("LOCOpeningFullscreenModeMessage"));
 
-            ProcessStarter.StartProcess(PlaynitePaths.FullscreenExecutablePath, cmdline.ToString());
+            if (openProgress.ActivateProgress().Result == true)
+            {
+                if (!isFirstStart)
+                    CloseView();
+                application.Quit();
+                var cmdline = new CmdLineOptions()
+                {
+                    SkipLibUpdate = false,
+                    FirstTimeComplete = isFirstStart
+                };
+
+                ProcessStarter.StartProcess(PlaynitePaths.FullscreenExecutablePath, cmdline.ToString());
+            }
         }
 
         public void PlayRandomGame()

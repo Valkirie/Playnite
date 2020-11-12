@@ -202,7 +202,7 @@ namespace Playnite.DesktopApp
             }
 
             if (isFirstStart)
-                MainModel.OpenFullScreen(isFirstStart);
+                MainModel.SwitchToFullscreenMode(isFirstStart);
             else
             {
                 MainModel.OpenView();
